@@ -1,40 +1,58 @@
 import streamlit as st
+import os
+import tempfile
+from rag_engine import process_document, analyze_document # Importing backend
 
-# 1. Configuration
 st.set_page_config(page_title="Before You Click Agree", page_icon="⚖️")
 
-# 2. The Header
-st.title("🕵️‍♂️ Before You Click 'Agree'")
-st.markdown("""
-**Don't sign blindly.** Upload a contract, Terms of Service, or Privacy Policy. 
-This AI Detective will find the **Red Flags** 🚩 for you.
-""")
-
-# 3. Sidebar for File Upload
+# Sidebar
 with st.sidebar:
-    st.header("1. Upload Document")
+    st.header("Upload Document")
     uploaded_file = st.file_uploader("Upload PDF", type="pdf")
     
     st.divider()
     
-    st.header("2. Analysis Mode")
-    analysis_type = st.radio(
-        "What should I look for?",
-        ["🚫 Red Flags (Risks)", "💰 Hidden Costs", "🔒 Privacy Loopholes", "📄 Summarize Full Text"]
+    analysis_choice = st.radio(
+        "Analysis Mode",
+        ["🚩 Red Flags", "💰 Hidden Costs", "🔒 Privacy Risks"]
     )
     
-    # Add a "Go" button
-    analyze_btn = st.button("🔍 Analyze Document")
+    analyze_btn = st.button("Analyze Now", type="primary")
 
-# 4. Main Display Area (Placeholder)
+# Main Area
+st.title("🕵️‍♂️ Before You Click 'Agree'")
+st.markdown("### AI Contract Detective")
+
 if uploaded_file is not None:
-    st.success("✅ Document Uploaded Successfully!")
-    
-    # Show a preview (optional)
-    st.write(f"**Filename:** {uploaded_file.name}")
-    
+    # Save file temporarily so the backend can read it
+    with tempfile.NamedTemporaryFile(delete=False, suffix=".pdf") as tmp_file:
+        tmp_file.write(uploaded_file.getvalue())
+        tmp_file_path = tmp_file.name
+
+    st.success(f"✅ Loaded: {uploaded_file.name}")
+
     if analyze_btn:
-        st.info("🤖 The AI is reading your document... (Logic coming soon!)")
-        
-else:
-    st.info("👈 Please upload a PDF from the sidebar to start.")
+        with st.spinner("🧠 Reading the fine print..."):
+            try:
+                # CALL THE BACKEND (Ingest)
+                vector_db = process_document(tmp_file_path)
+                
+                # DEFINE THE QUESTION based on user button
+                if "Red Flags" in analysis_choice:
+                    query = "Find the top 3 most dangerous or unfair clauses in this contract. Explain why they are risky."
+                elif "Hidden Costs" in analysis_choice:
+                    query = "List all fees, penalties, auto-renewals, or financial obligations."
+                else:
+                    query = "How is my personal data used? Can they sell it to third parties?"
+                
+                # GET THE ANSWER
+                response = analyze_document(vector_db, query)
+                
+                # SHOW RESULT
+                st.markdown("### 📋 Detective's Report")
+                st.markdown(response)
+                
+            except Exception as e:
+                st.error(f"Error: {e}")
+            finally:
+                os.remove(tmp_file_path) # Cleanup
