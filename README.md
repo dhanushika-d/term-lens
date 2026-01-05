@@ -1,9 +1,9 @@
-# Before You Click 'Agree'
+# TermLense
 ### *The AI-Powered Contract Detective*
 
 **Ever clicked "I Agree" without reading the 50-page Terms of Service?**
 
-**Before You Click Agree** is a RAG (Retrieval-Augmented Generation) application that acts as your skeptical, protective lawyer. It scans PDF contracts, hunts for hidden fees, and flags risky clauses before you sign your life away.
+**TermLense** is a RAG (Retrieval-Augmented Generation) application that acts as your skeptical, protective lawyer. It scans PDF contracts, hunts for hidden fees, and flags risky clauses before you sign your life away.
 
 ---
 
