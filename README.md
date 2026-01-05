@@ -1,9 +1,9 @@
-# TermLense
+# TermLens
 ### *The AI-Powered Contract Detective*
 
 **Ever clicked "I Agree" without reading the 50-page Terms of Service?**
 
-**TermLense** is a RAG (Retrieval-Augmented Generation) application that acts as your skeptical, protective lawyer. It scans PDF contracts, hunts for hidden fees, and flags risky clauses before you sign your life away.
+**TermLens** is a RAG (Retrieval-Augmented Generation) application that acts as your skeptical, protective lawyer. It scans PDF contracts, hunts for hidden fees, and flags risky clauses before you sign your life away.
 
 ---
 
